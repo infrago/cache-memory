@@ -23,9 +23,8 @@ type (
 	memoryConnect struct {
 		mutex sync.RWMutex
 
-		name    string
-		config  cache.Config
-		setting memorySetting
+		instance *cache.Instance
+		setting  memorySetting
 
 		db *buntdb.DB
 	}
@@ -35,14 +34,14 @@ type (
 )
 
 // 连接
-func (driver *memoryDriver) Connect(name string, config cache.Config) (cache.Connect, error) {
+func (driver *memoryDriver) Connect(inst *cache.Instance) (cache.Connect, error) {
 	//获取配置信息
 	setting := memorySetting{
 		Store: ":memory:",
 	}
 
 	return &memoryConnect{
-		name: name, config: config, setting: setting,
+		instance: inst, setting: setting,
 	}, nil
 }
 
