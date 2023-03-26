@@ -146,7 +146,7 @@ func (this *memoryConnect) Delete(key string) error {
 	})
 }
 
-func (this *memoryConnect) Serial(key string, start, step int64, expiry time.Duration) (int64, error) {
+func (this *memoryConnect) Sequence(key string, start, step int64, expiry time.Duration) (int64, error) {
 	value := start
 
 	if data, err := this.Read(key); err == nil {
