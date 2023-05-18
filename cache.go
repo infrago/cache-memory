@@ -95,7 +95,7 @@ func (this *memoryConnect) Read(key string) ([]byte, error) {
 }
 
 // 更新缓存
-func (this *memoryConnect) Write(key string, data []byte, expiry time.Duration) error {
+func (this *memoryConnect) Write(key string, data []byte, expire time.Duration) error {
 	if this.db == nil {
 		return errInvalidCacheConnection
 	}
@@ -107,9 +107,9 @@ func (this *memoryConnect) Write(key string, data []byte, expiry time.Duration) 
 
 	return this.db.Update(func(tx *buntdb.Tx) error {
 		opts := &buntdb.SetOptions{Expires: false}
-		if expiry > 0 {
+		if expire > 0 {
 			opts.Expires = true
-			opts.TTL = expiry
+			opts.TTL = expire
 		}
 		_, _, err := tx.Set(key, value, opts)
 		return err
@@ -146,7 +146,7 @@ func (this *memoryConnect) Delete(key string) error {
 	})
 }
 
-func (this *memoryConnect) Sequence(key string, start, step int64, expiry time.Duration) (int64, error) {
+func (this *memoryConnect) Sequence(key string, start, step int64, expire time.Duration) (int64, error) {
 	value := start
 
 	if data, err := this.Read(key); err == nil {
@@ -160,7 +160,7 @@ func (this *memoryConnect) Sequence(key string, start, step int64, expiry time.D
 
 	//写入值
 	data := []byte(fmt.Sprintf("%v", value))
-	err := this.Write(key, data, expiry)
+	err := this.Write(key, data, expire)
 	if err != nil {
 		return int64(0), err
 	}
